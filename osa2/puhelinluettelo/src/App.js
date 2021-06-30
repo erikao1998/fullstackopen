@@ -4,14 +4,22 @@ import Person from './components/Person'
 import Filter from './components/Filter'
 import service from './services/persons'
 
-const Notification = ({message, isShowingAlert, setShowingAlert}) => {
+const Notification = ({message, redError}) => {
 
   if (message === null) {
     return null
   }
 
+  if (redError) {
+    return (
+      <div className='redError'>
+        {message}
+      </div>
+    )
+  }
+
   return (
-    <div className='error'>
+    <div className='greenError'>
      {message}
     </div>
   )
@@ -23,6 +31,7 @@ const App = () => {
   const [ newNumber, setNewNumber ] = useState('')
   const [ search, setSearch ] = useState('')
   const [ errorMessage, setErrorMessage ] = useState(null)
+  const [ redError, setRedError ] = useState(false)
 
   useEffect(() => {
     service
@@ -65,10 +74,19 @@ const App = () => {
               setErrorMessage(null)
             }, 2000)
 
-            })
-        
-      }
+           })
+            .catch(error => {
+              setErrorMessage(
+                `${searchedPerson.name} was already deleted from server`
+              )
+              setRedError(true)
+              setTimeout(() => {
+                setErrorMessage(null)
+              }, 2000)
 
+            })
+
+          }
     } else {
 
       const personObject = {
@@ -121,6 +139,18 @@ const App = () => {
           setErrorMessage(null)
         }, 2000)
       })
+      .catch(error => {
+        setErrorMessage(
+          `${searchedPerson.name} was already deleted from server`
+        )
+        setRedError(true)
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 2000)
+
+      })
+
+
   }
 
 
@@ -128,7 +158,7 @@ const App = () => {
     <div>
       <h1>Phonebook</h1>
 
-      <Notification message={errorMessage}/>
+      <Notification message={errorMessage} redError={redError}/>
       <Filter handleChange={handleSearch}/>
 
       <PersonForm add={addPerson} handleName={handleNameChange} handleNumber={handleNumberChange} name={newName} number={newNumber} />

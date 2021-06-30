@@ -17,8 +17,18 @@ h1 {
   font-style: italic;
 }
 
-.error {
+.greenError {
   color: limeGreen;
+  background: lightgrey;
+  font-size: 20px;
+  border-style: solid;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.redError {
+  color: crimson;
   background: lightgrey;
   font-size: 20px;
   border-style: solid;
