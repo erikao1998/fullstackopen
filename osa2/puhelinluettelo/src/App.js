@@ -4,23 +4,24 @@ import Person from './components/Person'
 import Filter from './components/Filter'
 import service from './services/persons'
 
-const Notification = ({message, redError}) => {
-
-  if (message === null) {
+const Notification = ({errorMessage}) => {
+  console.log("redErrorin tila on " + errorMessage.red)
+  if (errorMessage.message === null) {
     return null
   }
 
-  if (redError) {
+  if (errorMessage.red === true) {
+
     return (
       <div className='redError'>
-        {message}
+        {errorMessage.message}
       </div>
     )
   }
 
   return (
     <div className='greenError'>
-     {message}
+     {errorMessage.message}
     </div>
   )
 }
@@ -30,8 +31,7 @@ const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ search, setSearch ] = useState('')
-  const [ errorMessage, setErrorMessage ] = useState(null)
-  const [ redError, setRedError ] = useState(false)
+  const [ errorMessage, setErrorMessage ] = useState({message: null, red: true})
 
   useEffect(() => {
     service
@@ -69,20 +69,20 @@ const App = () => {
           .update(searchedPerson.id, changedPerson)
           .then(response => {
             setPersons(persons.map(person => person.id !== searchedPerson.id ? person : response.data))
-            setErrorMessage(`Updated ${searchedPerson.name}'s number`)
+            setErrorMessage({message: `Updated ${searchedPerson.name}'s number`, red: false})
             setTimeout(() => {
-              setErrorMessage(null)
+              setErrorMessage({message: null, red: false})
             }, 2000)
 
            })
             .catch(error => {
-              setErrorMessage(
-                `${searchedPerson.name} was already deleted from server`
-              )
-              setRedError(true)
+              setErrorMessage({message: `${searchedPerson.name} was already deleted from server`, red: true})
+              // setRedError(true)
               setTimeout(() => {
-                setErrorMessage(null)
+                setErrorMessage({message: null, red: false})
               }, 2000)
+              // setRedError(false)
+
 
             })
 
@@ -97,16 +97,26 @@ const App = () => {
 
       service
         .create(personObject)
-        .then(response => {
-          setPersons(persons.concat(response.data))
+        .then(person => {
+          setPersons(persons.concat(person.data))
           setNewName('')
           setNewNumber('')
           setErrorMessage(
-            `Added '${personObject.name}'`
+            {message: `Added '${personObject.name}'`, red: false}
           )
           setTimeout(() => {
-          setErrorMessage(null)
-        }, 2000)
+            setErrorMessage({message: null, red: false})
+          }, 2000)
+        })
+        .catch(error => {
+
+          setErrorMessage({message: `${error.response.data.error}`, red: true})
+
+          setTimeout(() => {
+            setErrorMessage(
+              {message: null, red: false}
+            )
+          }, 3000)
 
         })
     }
@@ -134,19 +144,20 @@ const App = () => {
       .deletePerson(id)
       .then(response => {
         setPersons(persons.filter(n => n.id !== id))
-        setErrorMessage(`Deleted ${searchedPerson.name}`)
+        setErrorMessage({message: `Deleted ${searchedPerson.name}`, red: false})
         setTimeout(() => {
-          setErrorMessage(null)
+          setErrorMessage({message: null, red: false})
         }, 2000)
       })
       .catch(error => {
         setErrorMessage(
-          `${searchedPerson.name} was already deleted from server`
+          {message: `${searchedPerson.name} was already deleted from server`, red: true}
         )
-        setRedError(true)
+        // setRedError(true)
         setTimeout(() => {
-          setErrorMessage(null)
+          setErrorMessage({message: null, red: false})
         }, 2000)
+        // setRedError(false)
 
       })
 
@@ -158,7 +169,7 @@ const App = () => {
     <div>
       <h1>Phonebook</h1>
 
-      <Notification message={errorMessage} redError={redError}/>
+      <Notification errorMessage={errorMessage}/>
       <Filter handleChange={handleSearch}/>
 
       <PersonForm add={addPerson} handleName={handleNameChange} handleNumber={handleNumberChange} name={newName} number={newNumber} />

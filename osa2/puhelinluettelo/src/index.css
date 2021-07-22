@@ -5,6 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: aliceBlue;
 }
 
 code {
@@ -13,8 +14,14 @@ code {
 }
 
 h1 {
-  color: green;
+  color: DodgerBlue;
   font-style: italic;
+}
+
+button {
+  color: blue;
+  font-family: cursive;
+  background-color: aqua;
 }
 
 .greenError {
