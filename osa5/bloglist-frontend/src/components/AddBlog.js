@@ -1,29 +1,60 @@
-import React from 'react'
+import React, {useState} from 'react'
 
-const AddBlogForm = ({ add, handleTitle, handleAuthor, handleUrl, url, title, author }) => {
+const AddBlogForm = ({ createBlog}) => {
+  const [title, setTitle] = useState('')
+  const [url, setUrl] = useState('')
+  const [author, setAuthor] = useState('')
+
+  const handleTitleChange = (event) => {
+    setTitle(event.target.value)
+  }
+
+  const handleAuthorChange = (event) => {
+    setAuthor(event.target.value)
+  }
+
+  const handleUrlChange = (event) => {
+    setUrl(event.target.value)
+  }
+
+  const addBlog = (event) => {
+    event.preventDefault()
+    createBlog({
+      title: title,
+      author: author,
+      url: url,
+      likes: 0
+    })
+
+    setTitle('')
+    setAuthor('')
+    setUrl('')
+  }
+
+
   return (
     <div>
       <h2>add a new blog</h2>
-      <form onSubmit={add}>
+      <form onSubmit={addBlog}>
         <div>
           title:{' '}
           <input
             value={title}
-            onChange={handleTitle}
+            onChange={handleTitleChange}
           />
         </div>
         <div>
           author:{' '}
           <input
             value={author}
-            onChange={handleAuthor}
+            onChange={handleAuthorChange}
           />
         </div>
         <div>
           url:{' '}
           <input
             value={url}
-            onChange={handleUrl}
+            onChange={handleUrlChange}
           />
         </div>
         <button style={{marginTop:10}} type="submit">add</button>
@@ -31,6 +62,5 @@ const AddBlogForm = ({ add, handleTitle, handleAuthor, handleUrl, url, title, au
     </div>
   )
 }
-
 
 export default AddBlogForm
