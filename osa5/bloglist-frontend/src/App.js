@@ -22,7 +22,7 @@ const Notification = ({errorMessage}) => {
 
   return (
     <div className='greenError'>
-     {errorMessage.message}
+      {errorMessage.message}
     </div>
   )
 }
@@ -31,7 +31,6 @@ const Notification = ({errorMessage}) => {
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [loginVisible, setLoginVisible] = useState(false)
   const [errorMessage, setErrorMessage ] = useState({message: null, red: true})
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -172,9 +171,9 @@ const App = () => {
     return (
       <div>
         {user.name === null
-        ?  <p>{user.username} is logged in</p>
+          ?  <p>{user.username} is logged in</p>
 
-        :  <p>{user.name} is logged in</p>
+          :  <p>{user.name} is logged in</p>
         }
 
 
@@ -203,9 +202,9 @@ const App = () => {
 
       {user === null ?
 
-         loginForm() :
+        loginForm() :
 
-         blogilista()}
+        blogilista()}
     </div>
   )
 }
