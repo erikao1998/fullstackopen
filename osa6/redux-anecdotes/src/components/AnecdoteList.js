@@ -15,12 +15,12 @@ const AnecdoteList = () => {
   const voteActions = (anecdote) => {
     const updatedAnecdote = {content: anecdote.content, votes: anecdote.votes+=1}
     dispatch(vote(anecdote.id, updatedAnecdote))
-    dispatch(setNotification(`you voted '${anecdote.content}'`, 3))
+    dispatch(setNotification(`you voted '${anecdote.content}'`, 5))
   }
 
 
   return (
-    <div>
+    <div className="search-node">
       {filter === ''
       ? sortedAnecdotes.map(anecdote =>
         <div key={anecdote.id}>

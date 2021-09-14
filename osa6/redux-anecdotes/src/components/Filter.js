@@ -1,13 +1,16 @@
 import React from 'react'
 import { addFilter } from '../reducers/filterReducer'
-import { useDispatch } from 'react-redux'
+import { connect } from 'react-redux'
+import Mark from 'mark.js'
 
-const Filter = () => {
-  const dispatch = useDispatch()
+const Filter = (props) => {
 
   const handleChange = (event) => {
     const filter = event.target.value
-    dispatch(addFilter(filter))
+    props.addFilter(filter)
+    const instance = new Mark(document.querySelector(".search-node"))
+    instance.unmark()
+    instance.mark(filter)
 
   }
   const style = {
@@ -15,10 +18,15 @@ const Filter = () => {
   }
 
   return (
-    <div style={style}>
-      filter <input onChange={handleChange} />
+    <div>
+      <div style={style}>
+        filter <input onChange={handleChange} />
+      </div>
     </div>
   )
 }
+const mapDispatchToProps = {
+  addFilter
+}
 
-export default Filter
+export default connect(null, mapDispatchToProps)(Filter)
