@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import useField from './hooks/index'
 import {
   BrowserRouter as Router,
   Switch, Route, Link, useParams
@@ -90,23 +91,35 @@ const Notification = ({notification}) => {
 }
 
 const CreateNew = (props) => {
-  const [content, setContent] = useState('')
-  const [author, setAuthor] = useState('')
-  const [info, setInfo] = useState('')
 
-
+  const content = useField('content')
+  const author = useField('author')
+  const info = useField('info')
 
   const handleSubmit = (e) => {
     e.preventDefault()
     props.addNew({
-      content,
-      author,
-      info,
+      content: content.value,
+      author: author.value,
+      info: info.value,
       votes: 0
     })
 
   }
+  const reset_button = () => {
+    content.reset_func()
+    author.reset_func()
+    info.reset_func()
+  }
 
+  const divContent = Object.assign({}, content)
+  delete divContent.reset_func
+
+  const divAuthor = Object.assign({}, author);
+  delete divAuthor.reset_func
+
+  const divInfo = Object.assign({}, info);
+  delete divInfo.reset_func
 
 
   return (
@@ -115,18 +128,19 @@ const CreateNew = (props) => {
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input name='content' value={content} onChange={(e) => setContent(e.target.value)} />
+          <input {...divContent} />
         </div>
         <div>
           author
-          <input name='author' value={author} onChange={(e) => setAuthor(e.target.value)} />
+          <input {...divAuthor} />
         </div>
         <div>
           url for more info
-          <input name='info' value={info} onChange={(e)=> setInfo(e.target.value)} />
+          <input {...divInfo} />
         </div>
-        <button>create</button>
+        <input type='submit' value='create' />
       </form>
+      <button onClick={reset_button}>reset</button>
     </div>
   )
 
