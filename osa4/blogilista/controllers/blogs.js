@@ -17,6 +17,34 @@ const getTokenFrom = request => {
   }
   return null
 }
+blogsRouter.get('/:id', async (request, response) => {
+  const id = request.params.id
+  const blog = await Blog.findById(id)
+  response.json(blog.toJSON())
+})
+blogsRouter.post('/:id/comments', async (request, response, next) => {
+  const comment = request.body
+  const url_id = request.params.id
+  const blog = await Blog.findById(url_id)
+  console.log(comment.comment)
+  console.log(comment)
+  console.log(blog)
+  blog.comments = blog.comments.concat(comment.comment)
+  savedBlog = await blog.save()
+  console.log(savedBlog)
+  response.status(201).json(comment.comment)
+})
+
+blogsRouter.get('/:id/comments', async (request, response, next) => {
+  const url_id = request.params.id
+  const blog = await Blog.findById(url_id)
+  console.log(blog)
+  if (!blog.comments) {
+    response.json(blog.comments.map(comment => comment.toJSON()))
+  } else {
+    response.json(blog.comments)
+  }
+})
 
 blogsRouter.post('/', async (request, response, next) => {
 
@@ -64,11 +92,14 @@ blogsRouter.delete('/:id', async (request, response, next) => {
   if (!request.token || !decodedToken.id) {
     return response.status(401).json({ error: 'token missing or invalid' })
   }
+  console.log(request.params.id)
   const blog = await Blog.findById(request.params.id)
+  console.log(blog)
   const userid = decodedToken.id
   if ( blog.user.toString() === userid.toString()) {
-    await Blog.findByIdAndRemove(request.params.id)
-    response.status(204).end()
+
+    const deletedBlog = await Blog.findByIdAndRemove(request.params.id)
+    return response.status(204).json(deletedBlog.toJSON())
   } else {
     return response.status(401).json({ error: 'authorization failed'})
   }
